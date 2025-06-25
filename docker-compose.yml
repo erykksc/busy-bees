@@ -1,0 +1,50 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - dynamodb
+
+    environment:
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    ports:
+      - "8000:8000"
+
+  dynamodb-init:
+    image: amazon/aws-cli
+    depends_on:
+      - dynamodb
+    entrypoint: /bin/sh
+    environment:
+      # Dummy key
+      AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
+      # Dummy secret
+      AWS_SECRET_ACCESS_KEY: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+      # Dummy region
+      AWS_DEFAULT_REGION: "us-east-1"
+    command: -c "
+      sleep 5 &&
+      aws dynamodb create-table \
+      --table-name Users \
+      --attribute-definitions AttributeName=UserId,AttributeType=S \
+      --key-schema AttributeName=UserId,KeyType=HASH \
+      --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+      --endpoint-url http://dynamodb:8000
+      "
