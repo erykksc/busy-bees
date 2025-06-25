@@ -1,4 +1,4 @@
-module github.com/erykksc/busy-bees
+module github.com/erykksc/busy-bees/backend
 
 go 1.24.2
 
