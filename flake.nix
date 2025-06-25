@@ -6,7 +6,7 @@
   outputs =
     inputs:
     let
-      goVersion = 23;
+      goVersion = 24;
       nodejsVersion = 24;
 
       supportedSystems = [
@@ -38,6 +38,8 @@
         {
           default = pkgs.mkShell {
             packages = with pkgs; [
+              awscli2
+              opentofu
               # go (version is specified by overlay)
               go
 
@@ -46,9 +48,6 @@
 
               # goimports, godoc, etc.
               gotools
-
-              # https://github.com/golangci/golangci-lint
-              golangci-lint
             ];
           };
         }
