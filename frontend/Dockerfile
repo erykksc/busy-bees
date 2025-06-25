@@ -10,4 +10,5 @@ COPY . .
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+CMD ["npx","vite", "--host"]
+# CMD ["npm", "run", "dev", "--expose"]
